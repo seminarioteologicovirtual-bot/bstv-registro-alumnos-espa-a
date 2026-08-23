@@ -22,3 +22,94 @@ async function bstvCheckGoogle(){
 }
 
 window.addEventListener('load',()=>bstvCheckGoogle());
+/* BSTV 2.0 — CORRECCIÓN DE NAVEGACIÓN */
+
+(function () {
+
+  function iniciarNavegacionBSTV() {
+
+    const botones = document.querySelectorAll(".nav[data-view]");
+    const vistas = document.querySelectorAll(".view");
+    const titulo = document.getElementById("pageTitle");
+
+    if (!botones.length || !vistas.length) {
+      return;
+    }
+
+    const titulos = {
+      dashboard: "Panel de administración",
+      students: "Alumnos",
+      formations: "Formaciones",
+      courses: "Cursos y asignaturas",
+      attendance: "Control de asistencia",
+      grades: "Evaluación",
+      certificates: "Certificados",
+      reports: "Informes"
+    };
+
+    function abrirVista(id) {
+
+      vistas.forEach(function (vista) {
+
+        const activa = vista.id === id;
+
+        vista.classList.toggle("active", activa);
+
+        vista.style.display = activa ? "block" : "none";
+
+      });
+
+      botones.forEach(function (boton) {
+
+        boton.classList.toggle(
+          "active",
+          boton.dataset.view === id
+        );
+
+      });
+
+      if (titulo) {
+        titulo.textContent =
+          titulos[id] || "BSTV 2.0";
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    botones.forEach(function (boton) {
+
+      boton.addEventListener("click", function (e) {
+
+        e.preventDefault();
+
+        abrirVista(this.dataset.view);
+
+      });
+
+    });
+
+    const inicial =
+      document.querySelector(
+        ".nav.active[data-view]"
+      )?.dataset.view || "dashboard";
+
+    abrirVista(inicial);
+  }
+
+  if (document.readyState === "loading") {
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      iniciarNavegacionBSTV
+    );
+
+  } else {
+
+    iniciarNavegacionBSTV();
+
+  }
+
+})();
