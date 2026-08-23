@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSTV 2.0 · Gestión Académica</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">BSTV</div><div><strong>BSTV 2.0</strong><small>Gestión Académica</small></div></div>
+    <nav>
+      <button class="nav active" data-view="dashboard">⌂ <span>Inicio</span></button>
+      <button class="nav" data-view="students">👥 <span>Alumnos</span></button>
+      <button class="nav" data-view="formations">🎓 <span>Formaciones</span></button>
+      <button class="nav" data-view="courses">📚 <span>Cursos y asignaturas</span></button>
+      <button class="nav" data-view="attendance">📅 <span>Asistencia</span></button>
+      <button class="nav" data-view="grades">📝 <span>Evaluación</span></button>
+      <button class="nav" data-view="certificates">📜 <span>Certificados</span></button>
+      <button class="nav" data-view="reports">📊 <span>Informes</span></button>
+    </nav>
+    <div class="side-note">Formaciones oficiales<br><b>Infantil · Hermanos · Bendecidas</b></div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div><span class="eyebrow">SEMINARIO TEOLÓGICO VIRTUAL</span><h1 id="pageTitle">Panel de administración</h1><div id="cloudStatus" class="cloud"></div></div>
+      <button class="primary" id="newStudentBtn">+ Nuevo alumno</button>
+    </header>
+
+    <section id="dashboard" class="view active">
+      <div class="cards">
+        <div class="card"><span>Alumnos</span><strong id="kpiStudents">0</strong></div>
+        <div class="card"><span>Activos</span><strong id="kpiActive">0</strong></div>
+        <div class="card"><span>Formaciones</span><strong>3</strong></div>
+        <div class="card"><span>Certificados</span><strong id="kpiCertificates">0</strong></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><div class="panelHead"><h2>Alumnos por formación</h2></div><div id="formationStats"></div></div>
+        <div class="panel"><div class="panelHead"><h2>Actividad</h2></div><div class="empty">Sistema preparado para registrar matrículas, asistencia, notas y certificados.</div></div>
+      </div>
+    </section>
+
+    <section id="students" class="view">
+      <div class="panel">
+        <div class="panelHead"><h2>Directorio de alumnos</h2><div class="actions"><input id="studentSearch" placeholder="Buscar nombre, email o ID..."><button class="secondary" id="exportBtn">Exportar CSV</button></div></div>
+        <div class="tableWrap"><table><thead><tr><th>ID</th><th>Alumno</th><th>Formación</th><th>Curso</th><th>Estado</th><th>Contacto</th><th></th></tr></thead><tbody id="studentRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="formations" class="view">
+      <div class="cards formationCards" id="formationCards"></div>
+    </section>
+
+    <section id="courses" class="view"><div class="panel"><div class="panelHead"><h2>Cursos y asignaturas</h2><button class="primary" id="newCourseBtn">+ Nuevo curso</button></div><div class="tableWrap"><table><thead><tr><th>ID</th><th>Curso</th><th>Formación</th><th>Año</th><th>Profesor</th></tr></thead><tbody id="courseRows"></tbody></table></div></div></section>
+    <section id="attendance" class="view"><div class="panel"><div class="panelHead"><h2>Control de asistencia</h2><button class="primary" id="newAttendanceBtn">+ Registrar asistencia</button></div><div class="tableWrap"><table><thead><tr><th>Fecha</th><th>Alumno</th><th>Formación</th><th>Asignatura</th><th>Estado</th></tr></thead><tbody id="attendanceRows"></tbody></table></div></div></section>
+    <section id="grades" class="view"><div class="panel"><div class="panelHead"><h2>Evaluación</h2><button class="primary" id="newGradeBtn">+ Nueva calificación</button></div><div class="tableWrap"><table><thead><tr><th>Alumno</th><th>Formación</th><th>Asignatura</th><th>Examen</th><th>Nota final</th></tr></thead><tbody id="gradeRows"></tbody></table></div></div></section>
+    <section id="certificates" class="view"><div class="panel"><div class="panelHead"><h2>Certificados</h2><button class="primary" id="newCertificateBtn">+ Nuevo certificado</button></div><div class="tableWrap"><table><thead><tr><th>Alumno</th><th>Formación</th><th>Fecha</th><th>Estado</th></tr></thead><tbody id="certificateRows"></tbody></table></div></div></section>
+    <section id="reports" class="view"><div class="panel"><div class="panelHead"><h2>Informes</h2></div><div class="empty">Los informes se conectarán a la base central de Google Sheets en la siguiente fase.</div></div></section>
+  </main>
+</div>
+
+<div class="modal" id="genericModal"><div class="modalBox"><div class="modalHead"><h2 id="genericTitle"></h2><button id="closeGeneric">×</button></div><form id="genericForm"><div class="formGrid" id="genericFields"></div><div class="modalActions"><button type="button" class="secondary" id="cancelGeneric">Cancelar</button><button class="primary">Guardar</button></div></form></div></div>
+<div class="modal" id="studentModal" style="display:none">
+  <div class="modalBox">
+    <div class="modalHead"><h2>Registrar alumno</h2><button id="closeModal">×</button></div>
+    <form id="studentForm">
+      <div class="formGrid">
+        <label>Nombre<input name="name" required></label>
+        <label>Apellidos<input name="surname" required></label>
+        <label>DNI/NIE<input name="dni"></label>
+        <label>Teléfono<input name="phone"></label>
+        <label>Email<input type="email" name="email"></label>
+        <label>Localidad<input name="city"></label>
+        <label>Formación<select name="formation" required><option value="">Seleccionar...</option><option>BSTV INFANTIL</option><option>BSTV HERMANOS</option><option>BSTV BENDECIDAS</option></select></label>
+        <label>Curso<input name="course" placeholder="Ej. 1º"></label>
+        <label>Estado<select name="status"><option>Preinscrito</option><option selected>Matriculado</option><option>Activo</option><option>Pausado</option><option>Finalizado</option><option>Baja</option></select></label>
+        <label>Fecha de inscripción<input type="date" name="date"></label>
+      </div>
+      <div class="modalActions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button class="primary">Guardar alumno</button></div>
+    </form>
+  </div>
+</div>
+<script src="config.js"></script><script src="app.js"></script>
+</body>
+</html>
